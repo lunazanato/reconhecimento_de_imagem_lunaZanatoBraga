@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teachable Machine - Image Classifier</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-card {
+            max-width: 600px;
+            margin: 50px auto;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        #webcam-container {
+            margin: 20px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            display: inline-block;
+            border: 5px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+            border-radius: 5px;
+        }
+        .prediction-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress {
+            height: 25px;
+            border-radius: 12px;
+            background-color: #e9ecef;
+            margin-bottom: 15px;
+        }
+        .progress-bar {
+            transition: width 0.2s ease;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .btn-start {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card main-card text-center p-4">
+        <h2 class="mb-4 text-primary">IA Image Classifier</h2>
+        <p class="text-muted">Clique no botão abaixo para iniciar a sua câmera e realizar a classificação em tempo real.</p>
+        
+        <div class="d-grid gap-2 d-md-block">
+            <button class="btn btn-primary btn-start shadow-sm" type="button" onclick="init()">
+                Ativar Câmera
+            </button>
+        </div>
+
+        <div id="webcam-container" class="mt-4 d-none"></div>
+
+        <div id="label-container" class="mt-4 text-start">
+            </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+<script type="text/javascript">
+    const URL = "https://teachablemachine.withgoogle.com/models/UyXobcL_A/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    async function init() {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+
+        // Mostrar container da webcam
+        document.getElementById("webcam-container").classList.remove("d-none");
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        const flip = true; 
+        webcam = new tmImage.Webcam(300, 300, flip); 
+        await webcam.setup(); 
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        
+        // Criar estrutura de barras do Bootstrap
+        labelContainer.innerHTML = ""; // Limpa antes de carregar
+        for (let i = 0; i < maxPredictions; i++) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "mb-3";
+            wrapper.innerHTML = `
+                <div class="prediction-label">
+                    <span class="class-name text-dark">...</span>
+                    <span class="percentage text-primary">0%</span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%"></div>
+                </div>
+            `;
+            labelContainer.appendChild(wrapper);
+        }
+    }
+
+    async function loop() {
+        webcam.update(); 
+        await predict();
+        window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+        const prediction = await model.predict(webcam.canvas);
+        for (let i = 0; i < maxPredictions; i++) {
+            const pValue = (prediction[i].probability * 100).toFixed(0);
+            const classRow = labelContainer.childNodes[i];
+            
+            // Atualiza Texto da Classe
+            classRow.querySelector(".class-name").innerText = prediction[i].className;
+            
+            // Atualiza Porcentagem
+            classRow.querySelector(".percentage").innerText = pValue + "%";
+            
+            // Atualiza Barra de Progresso
+            const progressBar = classRow.querySelector(".progress-bar");
+            progressBar.style.width = pValue + "%";
+            
+            // Mudar cor baseado na confiança
+            if (pValue > 70) {
+                progressBar.className = "progress-bar bg-success progress-bar-striped progress-bar-animated";
+            } else if (pValue > 30) {
+                progressBar.className = "progress-bar bg-warning progress-bar-striped progress-bar-animated";
+            } else {
+                progressBar.className = "progress-bar bg-danger progress-bar-striped progress-bar-animated";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
