@@ -1,5 +1,6 @@
 import sys
 import random
+# pyrefly: ignore [missing-import]
 import pygame
 
 WIDTH, HEIGHT = 600, 800

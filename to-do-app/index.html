@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Gerenciador de Tarefas</title>
+  <meta name="description" content="Gerencie suas tarefas com estilo. Login, cadastro e painel completo." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Design System -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ════════════════════════════════════
+       LOGIN VIEW
+  ═════════════════════════════════════ -->
+  <div id="login-view" class="view-auth">
+    <div class="auth-card glass fade-up">
+
+      <div class="auth-logo">
+        <div class="auth-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
+                 M9 5a2 2 0 002 2h2a2 2 0 002-2
+                 M9 5a2 2 0 012-2h2a2 2 0 012 2
+                 m-6 9l2 2 4-4"/>
+          </svg>
+        </div>
+        <h1 class="auth-title">TaskFlow</h1>
+        <p class="auth-subtitle">Bem-vindo de volta</p>
+      </div>
+
+      <form id="login-form" class="auth-form" novalidate>
+        <div>
+          <label class="form-label" for="login-email">E-mail</label>
+          <input id="login-email" class="input-field" type="email"
+            autocomplete="email" placeholder="seu@email.com" />
+        </div>
+        <div>
+          <label class="form-label" for="login-password">Senha</label>
+          <input id="login-password" class="input-field" type="password"
+            autocomplete="current-password" placeholder="••••••••" />
+        </div>
+
+        <p id="login-error" class="error-msg" role="alert"></p>
+
+        <button id="btn-login" class="btn-primary" type="submit" style="width:100%; padding:14px 24px;">
+          Entrar
+        </button>
+      </form>
+
+      <p class="auth-footer">
+        Não tem conta?
+        <span id="go-to-register" class="link-action">Cadastre-se</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       REGISTER VIEW
+  ═════════════════════════════════════ -->
+  <div id="register-view" class="view-auth hidden">
+    <div class="auth-card glass fade-up">
+
+      <div class="auth-logo">
+        <div class="auth-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M18 9v3m0 0v3m0-3h3m-3 0h-3
+                 m-2-5a4 4 0 11-8 0 4 4 0 018 0z
+                 M3 20a6 6 0 0112 0v1H3v-1z"/>
+          </svg>
+        </div>
+        <h1 class="auth-title">Criar Conta</h1>
+        <p class="auth-subtitle">Comece a organizar suas tarefas</p>
+      </div>
+
+      <form id="register-form" class="auth-form" novalidate>
+        <div>
+          <label class="form-label" for="register-name">Nome</label>
+          <input id="register-name" class="input-field" type="text"
+            autocomplete="name" placeholder="Seu nome completo" />
+        </div>
+        <div>
+          <label class="form-label" for="register-email">E-mail</label>
+          <input id="register-email" class="input-field" type="email"
+            autocomplete="email" placeholder="seu@email.com" />
+        </div>
+        <div>
+          <label class="form-label" for="register-password">Senha</label>
+          <input id="register-password" class="input-field" type="password"
+            autocomplete="new-password" placeholder="Mín. 6 caracteres" />
+        </div>
+
+        <p id="register-error" class="error-msg" role="alert"></p>
+
+        <button id="btn-register" class="btn-primary" type="submit" style="width:100%; padding:14px 24px;">
+          Criar Conta
+        </button>
+      </form>
+
+      <p class="auth-footer">
+        Já tem conta?
+        <span id="go-to-login" class="link-action">Entrar</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       APP / DASHBOARD VIEW
+  ═════════════════════════════════════ -->
+  <div id="app-view" class="hidden">
+
+    <!-- Header -->
+    <header class="app-header glass">
+      <div class="app-header-inner">
+        <div class="header-greeting">
+          <div class="header-logo-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
+                   M9 5a2 2 0 002 2h2a2 2 0 002-2
+                   M9 5a2 2 0 012-2h2a2 2 0 012 2
+                   m-6 9l2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <p class="greeting-label">Olá,</p>
+            <p id="user-greeting" class="greeting-name"></p>
+          </div>
+        </div>
+
+        <button id="btn-logout" class="btn-logout">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+
+      <!-- ── Add Task Form ── -->
+      <section class="section-card glass">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Nova Tarefa
+          </h2>
+        </div>
+
+        <form id="task-form" novalidate>
+          <div class="task-form-grid">
+            <div>
+              <label class="form-label" for="task-title">Título <span style="color:#ef4444">*</span></label>
+              <input id="task-title" class="input-field" type="text"
+                placeholder="O que precisa ser feito?" />
+            </div>
+            <div>
+              <label class="form-label" for="task-type">Tipo <span style="color:#ef4444">*</span></label>
+              <select id="task-type" class="input-field">
+                <option value="Trabalho">💼 Trabalho</option>
+                <option value="Pessoal">🏠 Pessoal</option>
+                <option value="Estudos">📚 Estudos</option>
+              </select>
+            </div>
+            <div class="task-form-full">
+              <label class="form-label" for="task-description">
+                Descrição <span style="color:#64748b;font-weight:400">(opcional)</span>
+              </label>
+              <textarea id="task-description" class="input-field" rows="3"
+                placeholder="Detalhes adicionais..."></textarea>
+            </div>
+          </div>
+
+          <p id="task-error" class="error-msg" role="alert" style="margin-top:12px;"></p>
+
+          <button id="btn-add-task" class="btn-primary" type="submit"
+            style="margin-top:16px; padding:10px 20px;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Adicionar Tarefa
+          </button>
+        </form>
+      </section>
+
+      <!-- ── Task List ── -->
+      <section>
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
+                   M9 5a2 2 0 002 2h2a2 2 0 002-2
+                   M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            Minhas Tarefas
+          </h2>
+          <span id="task-count" class="task-count-badge"></span>
+        </div>
+
+        <div id="task-list" class="task-list">
+          <!-- rendered by app.js -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
